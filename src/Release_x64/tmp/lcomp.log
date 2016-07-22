@@ -1,0 +1,5 @@
+﻿  maincomp.cpp
+e:\work\lcomp_sim\src\maincomp.cpp(36): warning C4700: uninitialized local variable 'pI' used
+     Creating library Release_x64\lcomp64.lib and object Release_x64\lcomp64.exp
+  lcomp.vcxproj -> e:\work\lcomp_sim\src\Release_x64\lcomp64.dll
+  lcomp.vcxproj -> Release_x64\lcomp64.pdb (Full PDB)

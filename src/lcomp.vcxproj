@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0A078364-B2B8-44D1-A3B6-432617B6F1FE}</ProjectGuid>
     <RootNamespace>lcomp</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -31,7 +32,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -221,10 +222,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/lcomp.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Message>Build User Manual from source comments (YADOX)</Message>
-      <Command>$(ProjectDir)\plainhtm.exe $(ProjectDir)\help_prj.h &gt; output.log</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -279,27 +276,12 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/lcomp.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Message>Build User Manual from source comments (YADOX)</Message>
-      <Command>$(ProjectDir)\plainhtm.exe $(ProjectDir)\help_prj.h &gt; output.log</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\INCLUDE\lguids.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="791.cpp">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="e140.cpp" />
-    <ClCompile Include="e154.cpp" />
-    <ClCompile Include="e2010.cpp" />
-    <ClCompile Include="e310.cpp" />
-    <ClCompile Include="e440.cpp" />
     <ClCompile Include="ldevbase.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -307,21 +289,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="ldevbase_ex.cpp" />
-    <ClCompile Include="loade2010.cpp" />
-    <ClCompile Include="loade440.cpp" />
-    <ClCompile Include="loadplx.cpp">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
     <ClCompile Include="maincomp.cpp">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="plx.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -331,30 +299,18 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\INCLUDE\1221CMD.H" />
-    <ClInclude Include="..\INCLUDE\791.h" />
-    <ClInclude Include="..\INCLUDE\791cmd.h" />
     <ClInclude Include="..\INCLUDE\CREATE.H" />
-    <ClInclude Include="..\INCLUDE\e140.h" />
-    <ClInclude Include="..\INCLUDE\e140cmd.h" />
-    <ClInclude Include="..\INCLUDE\e154.h" />
-    <ClInclude Include="..\INCLUDE\e154cmd.h" />
-    <ClInclude Include="..\INCLUDE\e2010.h" />
-    <ClInclude Include="..\INCLUDE\e2010cmd.h" />
-    <ClInclude Include="..\INCLUDE\e310.h" />
-    <ClInclude Include="..\INCLUDE\e310cmd.h" />
-    <ClInclude Include="..\INCLUDE\e440.h" />
-    <ClInclude Include="..\INCLUDE\e440cmd.h" />
     <ClInclude Include="..\INCLUDE\salayer.h" />
-    <ClInclude Include="help_prj.h" />
     <ClInclude Include="..\INCLUDE\ifc_ldev.h" />
     <ClInclude Include="..\INCLUDE\ioctl.h" />
     <ClInclude Include="..\INCLUDE\LDEVBASE.H" />
-    <ClInclude Include="..\INCLUDE\PCICMD.H" />
-    <ClInclude Include="..\INCLUDE\PLX.H" />
     <ClInclude Include="..\INCLUDE\stubs.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="lcomp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
