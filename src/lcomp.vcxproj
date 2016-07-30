@@ -296,6 +296,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="salayer.cpp" />
+    <ClCompile Include="simulator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\INCLUDE\1221CMD.H" />
@@ -304,6 +305,7 @@
     <ClInclude Include="..\INCLUDE\ifc_ldev.h" />
     <ClInclude Include="..\INCLUDE\ioctl.h" />
     <ClInclude Include="..\INCLUDE\LDEVBASE.H" />
+    <ClInclude Include="..\include\simulator.h" />
     <ClInclude Include="..\INCLUDE\stubs.h" />
   </ItemGroup>
   <ItemGroup>

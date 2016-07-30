@@ -27,6 +27,9 @@
     <ClCompile Include="..\INCLUDE\lguids.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\INCLUDE\CREATE.H">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\INCLUDE\salayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\simulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
