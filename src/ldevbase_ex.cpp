@@ -3,45 +3,46 @@
 #include "../include/salayer.h"
 #include "../include/ifc_ldev.h"
 #include "../include/ldevbase.h"
-#include <stdio.h>
+#include <cstdio>
+#include <Windows.h>
+#include <cstdint>
 // extended interface for ADC/DAC start-stop
 
-FDF(ULONG) LDaqBoard::InitStartLDeviceEx(ULONG StreamId)
+FDF(ULONG) LDaqBoardSimulator::InitStartLDeviceEx(ULONG StreamId)
 {
-ULONG cbRet, OutBuf, status = L_ERROR;
-UCHAR InBuf[16];
-
-   return sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_INIT_SYNC),
-                           &InBuf,sizeof(ULONG)+StreamId,
-                           &OutBuf,sizeof(ULONG),
-                           &cbRet,L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-
-FDF(ULONG) LDaqBoard::StartLDeviceEx(ULONG StreamId)
-{
-ULONG cbRet, status =  L_ERROR;
-UCHAR InBuf[16];
-
-   return status = sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_START),
-                         &InBuf,sizeof(ULONG)+StreamId,
-                         NULL, 0, // here we send data buffer parameters to lock in driver
-                         &cbRet,StreamId
-                        );
+DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
+	LDaqBoardSimulator *p_brd = (LDaqBoardSimulator*)param;
+	int steps_passed = 0;
+	const double irqstep_tm = 
+	while (p_brd->running) {
+		const double passed_time = steps_passed * irqstep_tm;
+		for (int tick = 0; tick < p_brd->adc_par.t1.IrqStep; ++tick) {
+			const double tm = passed_time + tick * p_brd->adc_par.t1.dKadr;
+		}
+		++steps_passed;
+	}
 }
 
-FDF(ULONG) LDaqBoard::StopLDeviceEx(ULONG StreamId)
+FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
 {
-ULONG cbRet, OutBuf, status = L_ERROR;
-UCHAR InBuf[16];
+	if (running)
+		return L_SUCCESS;
+	HANDLE sim_thread = CreateThread(NULL, 0, LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
+	if (sim_thread == NULL)
+		return L_ERROR;
+	running = true;
 
-   status = sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_STOP),
-                              &InBuf,sizeof(ULONG)+StreamId,
-                              &OutBuf,sizeof(ULONG),
-                              &cbRet,L_STREAM_NULL
-                             );
-   sal->LWaitOverlapped(hVxd,StreamId);
+    // start thread here
+	ULONG status = L_SUCCESS;
+	return status;
+}
 
-   return status;
+FDF(ULONG) LDaqBoardSimulator::StopLDeviceEx(ULONG StreamId)
+{
+    // stop thread here
+	ULONG status = L_SUCCESS;
+	return status;
 };

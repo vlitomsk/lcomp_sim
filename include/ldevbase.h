@@ -1,6 +1,7 @@
-class LDaqBoard: public IDaqLDevice, public IDaqLDevice2
+class LDaqBoardSimulator: public IDaqLDevice, public IDaqLDevice2
 {
 public:
+	
       virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);
       virtual ULONG   __stdcall AddRef();
       virtual ULONG   __stdcall Release();
@@ -74,8 +75,9 @@ public:
       IFC(ULONG)  StopLDeviceEx(ULONG StreamId);
 
 public:
-   LDaqBoard(ULONG Slot)
+   LDaqBoardSimulator(ULONG Slot)
    {
+	   running = false;
       sal = new SAL();
 
    	m_cRef.counter =0;
@@ -91,7 +93,7 @@ public:
       map_outBuffer = 0;
 	}
 
-   ~LDaqBoard() { delete sal;}
+   ~LDaqBoardSimulator() { delete sal;}
 
 public:
    virtual ULONG  FillADCparameters(PDAQ_PAR sp) {return L_NOTSUPPORTED;}
@@ -128,6 +130,9 @@ public:
    SAL *sal; // system abstraction layer class
 
 private:
+	bool running;
+	static DWORD __stdcall sim_thread_routine(LPVOID param);
+
 	atomic_t    m_cRef;
    ULONG       m_Slot;
 

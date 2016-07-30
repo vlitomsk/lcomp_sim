@@ -7,8 +7,7 @@
 #include "../include/ldevbase.h"
 #include <string.h>
 
-
-HRESULT __stdcall LDaqBoard::QueryInterface(const IID& iid, void** ppv)
+HRESULT __stdcall LDaqBoardSimulator::QueryInterface(const IID& iid, void** ppv)
 {
    if(iid==IID_IUnknown)
    {
@@ -22,11 +21,11 @@ HRESULT __stdcall LDaqBoard::QueryInterface(const IID& iid, void** ppv)
       }
       else 
       {
-         if(iid==IID_ILDEV2)
+         /*if(iid==IID_ILDEV2)
          {
             *ppv = static_cast<IDaqLDevice2*>(this);
          }
-         else
+         else*/
          {
             *ppv=NULL;
             return ((HRESULT)0x80004002L); // E_NOINTERFACE;
@@ -37,13 +36,13 @@ HRESULT __stdcall LDaqBoard::QueryInterface(const IID& iid, void** ppv)
    return ((HRESULT)0x00000000L); // S_OK;
 }
 
-ULONG __stdcall LDaqBoard::AddRef()
+ULONG __stdcall LDaqBoardSimulator::AddRef()
 {
    sal->atomic_inc(&m_cRef);
    return m_cRef.counter;
 }
 
-ULONG __stdcall LDaqBoard::Release()
+ULONG __stdcall LDaqBoardSimulator::Release()
 {
    sal->atomic_dec(&m_cRef);
    if(m_cRef.counter==0) {
@@ -55,286 +54,129 @@ ULONG __stdcall LDaqBoard::Release()
 
 // Working with I/O ports
 // data - data len - in bytes(sizeof)
-FDF(ULONG) LDaqBoard::inbyte(ULONG offset, PUCHAR data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::inbyte(ULONG offset, PUCHAR data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=0+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::inword(ULONG offset, PUSHORT data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::inword(ULONG offset, PUSHORT data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=1+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::indword(ULONG offset, PULONG data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::indword(ULONG offset, PULONG data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=2+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                           );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outbyte(ULONG offset, PUCHAR data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::outbyte(ULONG offset, PUCHAR data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=0+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outword(ULONG offset, PUSHORT data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::outword(ULONG offset, PUSHORT data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=1+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outdword(ULONG offset, PULONG data, ULONG len, ULONG key )
+FDF(ULONG) LDaqBoardSimulator::outdword(ULONG offset, PULONG data, ULONG len, ULONG key )
 {
-   ULONG cbRet;
-   PORT_PAR par; par.datatype=2+key; par.port=offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTP),
-                          &par, sizeof(PORT_PAR),
-                          data,len,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
 // Working with mem I/O ports
-FDF(ULONG) LDaqBoard::inmbyte(ULONG Offset, PUCHAR Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::inmbyte(ULONG Offset, PUCHAR Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=0+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::inmword(ULONG Offset, PUSHORT Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::inmword(ULONG Offset, PUSHORT Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=1+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::inmdword(ULONG Offset, PULONG Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::inmdword(ULONG Offset, PULONG Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=2+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_INM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outmbyte(ULONG Offset, PUCHAR Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::outmbyte(ULONG Offset, PUCHAR Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=0+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outmword(ULONG Offset, PUSHORT Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::outmword(ULONG Offset, PUSHORT Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=1+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::outmdword(ULONG Offset, PULONG Data, ULONG Length, ULONG Key)
+FDF(ULONG) LDaqBoardSimulator::outmdword(ULONG Offset, PULONG Data, ULONG Length, ULONG Key)
 {
-   ULONG cbRet;
-   PORT_PAR Par; Par.datatype=2+Key; Par.port=Offset;
-   return sal->LDeviceIoControl( hVxd, sal->CTL(DIOC_OUTM),
-                          &Par, sizeof(PORT_PAR),
-                          Data, Length,
-                          &cbRet, L_STREAM_NULL
-                         );
+	return L_SUCCESS;
 }
 
 // COMMON FUNCTIONS //////////////////////////////////////
-FDF(ULONG) LDaqBoard::GetSlotParam(PSLOT_PAR slPar)
+FDF(ULONG) LDaqBoardSimulator::GetSlotParam(PSLOT_PAR slPar)
 {
    memcpy(slPar,&sl,sizeof(SLOT_PAR));
    return 0;
 }
 
 
-FDF(HANDLE) LDaqBoard::OpenLDevice()
+FDF(HANDLE) LDaqBoardSimulator::OpenLDevice()
 {
-   ULONG status = L_ERROR;
-   ULONG cbRet;
-
-   do
-   {
-      hVxd = sal->LCreateFile(m_Slot);
-      if(hVxd == INVALID_HANDLE_VALUE) break;
-
-      status = sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_GET_PARAMS),
-                                     NULL,0,
-                                     &sl,sizeof(SLOT_PAR),
-                                     &cbRet, L_STREAM_NULL);
-
-      if(status == L_ERROR) { sal->LCloseHandle(hVxd); hVxd = INVALID_HANDLE_VALUE; }
-   } while(0);
-   sal->LSetLastError(status);
-   return hVxd;//csOpenLDevice();
+   sal->LSetLastError(L_SUCCESS);
+   return (HANDLE)1234;
 }
 
-FDF(ULONG) LDaqBoard::CloseLDevice()
+FDF(ULONG) LDaqBoardSimulator::CloseLDevice()
 {
-   ULONG status = L_ERROR;
+	ULONG status = L_SUCCESS;
 
-   do
-   {
-      if(hVxd==INVALID_HANDLE_VALUE) break;
+	if (map_inBuffer) {
+		ULONG sts = sal->LVirtualFree(map_inBuffer);
+		map_inBuffer = NULL;
+		if (!sts) status = L_ERROR;
+	}
 
-      status = sal->LCloseHandle(hVxd);
-      hVxd=INVALID_HANDLE_VALUE;    ////////////////      !!!!!!!!!!!!!!!!!! close before open
-
-      if(map_inBuffer)
-      {
-         sal->LUnmapMemory(map_inBuffer, map_inSize);
-         ULONG sts = sal->LVirtualFree(map_inBuffer); 
-         map_inBuffer = NULL;
-         if(!sts) status = L_ERROR;
-      }
-
-      if(map_outBuffer)
-      {
-         sal->LUnmapMemory(map_outBuffer, map_inSize);
-         ULONG sts = sal->LVirtualFree(map_outBuffer); 
-         map_outBuffer = NULL;
-         if(!sts) status = L_ERROR;
-      }
-   } while(0);
-
-   return status;//csCloseLDevice(status);
+	return status;
 }
-
 
 // uni stream interface
-FDF(ULONG) LDaqBoard::RequestBufferStream(ULONG *Size, ULONG StreamId) //in 16 bit words
+FDF(ULONG) LDaqBoardSimulator::RequestBufferStream(ULONG *Size, ULONG StreamId) //in 16 bit words
 {
-ULONG cbRet;
-ULONG status = L_ERROR;
-ULONG pb = 0;
-ULONG RealPages;
+	if (StreamId != L_STREAM_ADC)
+		return L_NOTSUPPORTED;
 
-void *buffer;
+	ULONG status = L_SUCCESS;
+	ULONG pb = 0;
+	ULONG RealPages;
+	void *buffer;
 
-   switch(StreamId)
-   {
-      case L_STREAM_DDS: { *Size = 0; status = L_SUCCESS; } break; // для DDS E-310 не нужна память
+	if (StreamId == L_STREAM_ADC) {
+		if (map_inBuffer != NULL)
+		{
+			sal->LVirtualFree(map_inBuffer);
+			map_inBuffer = NULL;
+		}
 
-      case L_STREAM_ADC :
-         {
-            if(map_inBuffer!=NULL)
-            {                                                //0
-               status = sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_SETBUFFER), &pb,sizeof(ULONG), NULL,0,&cbRet,L_STREAM_NULL);
-               if(status == L_ERROR) return L_ERROR;
+		RealPages = (*Size) / 2048 + ((*Size) % 2048 ? 1 : 0);
+		pb = (RealPages + 1) * 2048;
 
-               sal->LWaitOverlapped(hVxd, L_MEM_ALLOC+StreamId);
+		buffer = sal->LVirtualAlloc(pb*sizeof(USHORT));
+		if (buffer == NULL) return L_ERROR;
 
-               sal->LUnmapMemory(map_inBuffer, map_inSize);
-               sal->LVirtualFree(map_inBuffer); 
-               map_inBuffer = NULL;
-            }
+		map_inSize = *Size * sizeof(short);
+		map_inBuffer = buffer;
+	}
+	else
+		status = L_NOTSUPPORTED;
 
-            RealPages= (*Size)/2048+((*Size)%2048 ? 1:0);
-            pb = (RealPages+1)*2048;
-
-            buffer = sal->LVirtualAlloc(pb*sizeof(USHORT));
-            if(buffer == NULL) return L_ERROR;
-
-            status = sal->LDeviceIoControl(hVxd, sal->CTL(DIOC_SETBUFFER), &pb, sizeof(ULONG), buffer, pb*sizeof(USHORT), &cbRet, L_MEM_ALLOC+StreamId);
-
-            if(status == L_SUCCESS) { *Size = RealPages*2048; } 
-            else 
-              { sal->LVirtualFree(buffer); buffer = NULL; *Size = 0; }
-
-            map_inSize = *Size * sizeof(short);
-            map_inBuffer = sal->LMapMemory(hVxd, buffer, map_inSize, 0x1000);
-            if(map_inBuffer == NULL) status = L_ERROR;
-
-         } break;
-
-      case L_STREAM_DAC :
-         {
-            if(map_outBuffer!=NULL)
-            {                                                  //0
-               status= sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_SETBUFFER_1), &pb,sizeof(ULONG), NULL,0,&cbRet, L_STREAM_NULL); // запрос на завершение блокировки выделения
-               if(status == L_ERROR) return L_ERROR;
-
-               sal->LWaitOverlapped(hVxd, L_MEM_ALLOC+StreamId);
-
-               sal->LUnmapMemory(map_outBuffer, map_outSize);
-               sal->LVirtualFree(map_outBuffer);
-               map_outBuffer = NULL;
-            }
-
-            RealPages= (*Size)/2048+((*Size)%2048 ? 1:0);
-            pb = (RealPages+1)*2048;
-
-            buffer = sal->LVirtualAlloc(pb*sizeof(USHORT));
-            if(buffer == NULL) return L_ERROR;
-
-            status = sal->LDeviceIoControl(hVxd,sal->CTL(DIOC_SETBUFFER_1), &pb,sizeof(ULONG), buffer, pb*sizeof(USHORT), &cbRet, L_MEM_ALLOC+StreamId);
-
-            if(status == L_SUCCESS) { *Size = RealPages*2048; } 
-            else 
-              { sal->LVirtualFree(buffer); buffer = NULL; *Size = 0; }
-
-            map_outSize = *Size * sizeof(short);
-            map_outBuffer = sal->LMapMemory(hVxd, buffer, map_outSize, 0x2000);
-            if(map_outBuffer == NULL) status = L_ERROR;
-
-         } break;
-
-      default: status = L_ERROR;
-   }
-
-   return status;//csRequestBufferStream(Size,StreamId,status); // call to class specific function (if no - simple return status)//
+   return status;
 }
 
 
-LPVOID LDaqBoard::GetDAQ_PtrSz(ULONG StreamId, ULONG *sz)
+LPVOID LDaqBoardSimulator::GetDAQ_PtrSz(ULONG StreamId, ULONG *sz)
 {
    if(sal->LIsWin32()) // windows c++ style
    {
@@ -357,58 +199,33 @@ LPVOID LDaqBoard::GetDAQ_PtrSz(ULONG StreamId, ULONG *sz)
    return NULL;
 }
 
-FDF(ULONG) LDaqBoard::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize, void** Data, void** Sync, ULONG StreamId)
+FDF(ULONG) LDaqBoardSimulator::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize, void** Data, void** Sync, ULONG StreamId)
 {
-   ULONG cbRet;
-
-   LPVOID OutBuf[4]; // x64 i32 8 or 4 байт
-
    ULONG status = L_ERROR;
    USHORT *d1;
-   ULONG DiocCode;
-
-   LPVOID dp;
-   ULONG sz;
-   void *ptr;
    USHORT tPages, tFIFO, tIrqStep;
 
-   switch(StreamId)
-   {
-      case L_STREAM_ADC: { DiocCode = DIOC_SETUP;     } break;
-      case L_STREAM_DAC: { DiocCode = DIOC_SETUP_DAC; } break;
-      case L_STREAM_DDS: { DiocCode = DIOC_SETUP_DDS; } break;
-      default: return status;
-   };
+//   tPages   = (USHORT)OutBuf[0];
+//   tFIFO    = (USHORT)OutBuf[1];
+//   tIrqStep = (USHORT)OutBuf[2];
+   if (sp != NULL) {
+	   tPages = sp->Pages;
+	   tFIFO = sp->FIFO;
+	   tIrqStep = sp->IrqStep;
+   }
+   else {
+	   tPages = tFIFO = tIrqStep = 666;
+   }
 
-   dp = GetDAQ_PtrSz(StreamId, &sz); // get pointer and stuct size
+   *UsedSize = tPages*tIrqStep;
 
-   if(dp == NULL) return status;
-
-   status=sal->LDeviceIoControl(hVxd,sal->CTL(DiocCode),
-                          dp,sz,
-                          OutBuf,sizeof(OutBuf), // PVOID platform dependent
-                          &cbRet,L_STREAM_NULL);
-
-   if(StreamId == L_STREAM_DDS) return L_SUCCESS; // если настраиваем DDS E310 то ничего больше не нужно
-
-   tPages   = (USHORT)OutBuf[0];
-   tFIFO    = (USHORT)OutBuf[1];
-   tIrqStep = (USHORT)OutBuf[2];
-
-//   ret_val(Pages)   = tPages;            /////////////// FIX IT !!!!!!!!!!!!!!!! нафиг не нужно
-//   ret_val(FIFO)    = tFIFO;
-//   ret_val(IrqStep) = tIrqStep;
-
-   *UsedSize        = tPages*tIrqStep;
-
+   void *ptr;
    switch(StreamId)
    {
       case L_STREAM_ADC: { ptr = map_inBuffer; } break;
-      case L_STREAM_DAC: { ptr = map_outBuffer;} break;
+      //case L_STREAM_DAC: { ptr = map_outBuffer;} break;
       default: return L_ERROR;
    }
-
-   if(ptr == NULL) return L_ERROR;
 
    *Sync = (PULONG)ptr; d1 = (PUSHORT)ptr; *Data = &d1[2048];
 
@@ -419,19 +236,17 @@ FDF(ULONG) LDaqBoard::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize, void** D
       sp->IrqStep = tIrqStep;
    }
 
-//   status = csSetParametersStream(sp, UsedSize, Data, Sync, StreamId, status);
-
    switch(StreamId) // for GetParameter
    {
       case L_STREAM_ADC: { sync_addr =(PULONG)*Sync;  data_addr =  (PULONG)*Data;} break;
-      case L_STREAM_DAC: { sync_addr1 =(PULONG)*Sync; data_addr1 = (PULONG)*Data;} break;
+    //  case L_STREAM_DAC: { sync_addr1 =(PULONG)*Sync; data_addr1 = (PULONG)*Data;} break;
    }
 
    return status;
 }
 
 
-FDF(ULONG) LDaqBoard::FillDAQparameters(PDAQ_PAR sp)
+FDF(ULONG) LDaqBoardSimulator::FillDAQparameters(PDAQ_PAR sp)
 {
    if(sp == NULL) return L_ERROR;
 
@@ -445,20 +260,20 @@ FDF(ULONG) LDaqBoard::FillDAQparameters(PDAQ_PAR sp)
 }
 
 
-FDF(ULONG) LDaqBoard::IoAsync(PDAQ_PAR sp)
+FDF(ULONG) LDaqBoardSimulator::IoAsync(PDAQ_PAR sp)
 {
    if(sp == NULL) return L_ERROR;
 
    switch(sp->s_Type)
    {
-      case L_ASYNC_ADC_CFG: return ConfigADC(sp);
+      /*case L_ASYNC_ADC_CFG: return ConfigADC(sp);
       case L_ASYNC_TTL_CFG: return ConfigTTL(sp);
       case L_ASYNC_DAC_CFG: return ConfigDAC(sp);
 
       case L_ASYNC_ADC_INP: return InputADC(sp);
       case L_ASYNC_TTL_INP: return InputTTL(sp);
 
-      case L_ASYNC_TTL_OUT: return OutputTTL(sp);
+      case L_ASYNC_TTL_OUT: return OutputTTL(sp);*/
       case L_ASYNC_DAC_OUT: return OutputDAC(sp);
 
       default : return L_ERROR;
@@ -468,7 +283,7 @@ FDF(ULONG) LDaqBoard::IoAsync(PDAQ_PAR sp)
 // end of uni stream interface
 
 // нужно проверять LastError
-FDF(ULONG) LDaqBoard::InitStartLDevice()
+FDF(ULONG) LDaqBoardSimulator::InitStartLDevice()
 {
    ULONG Err=0;
    if(InitStartLDeviceEx(L_STREAM_ADC)) SETBIT(Err,L_STREAM_ADC_ERROR);
@@ -479,7 +294,7 @@ FDF(ULONG) LDaqBoard::InitStartLDevice()
 }
 
 // нужно проверять LastError
-FDF(ULONG) LDaqBoard::StartLDevice()
+FDF(ULONG) LDaqBoardSimulator::StartLDevice()
 {
    ULONG Err=0;
    if(StartLDeviceEx(L_STREAM_ADC)) SETBIT(Err,L_STREAM_ADC_ERROR);
@@ -491,7 +306,7 @@ FDF(ULONG) LDaqBoard::StartLDevice()
 }
 
 // нужно проверять LastError
-FDF(ULONG) LDaqBoard::StopLDevice()
+FDF(ULONG) LDaqBoardSimulator::StopLDevice()
 {
    ULONG Err=0;
    if(StopLDeviceEx(L_STREAM_ADC)) SETBIT(Err,L_STREAM_ADC_ERROR);
@@ -503,79 +318,24 @@ FDF(ULONG) LDaqBoard::StopLDevice()
 };
 
 
-FDF(ULONG) LDaqBoard::GetParameter(ULONG name, PULONG param)
+FDF(ULONG) LDaqBoardSimulator::GetParameter(ULONG name, PULONG param)
 {
-   ULONG status = L_SUCCESS;
-   if((name>=10100) && (name<10228)) 
-   {
-      *param = user_prop[name-10100];
-      return status;
-   }
-
-   switch(name)
-   {
-      case L_BOARD_TYPE:     *param = sl.BoardType; break;
-      case L_SYNC_ADDR_LO:   *param = ((unsigned _int64)sync_addr)&0xFFFFFFFF; break;
-      case L_SYNC_ADDR_HI:   *param = (((unsigned _int64)sync_addr)>>32)&0xFFFFFFFF; break;
-      case L_DATA_ADDR_LO:   *param = ((unsigned _int64)data_addr)&0xFFFFFFFF; break;
-      case L_DATA_ADDR_HI:   *param = (((unsigned _int64)data_addr)>>32)&0xFFFFFFFF; break;
-
-      case L_SYNC1_ADDR_LO:  *param = ((unsigned _int64)sync_addr1)&0xFFFFFFFF; break;
-      case L_SYNC1_ADDR_HI:  *param = (((unsigned _int64)sync_addr1)>>32)&0xFFFFFFFF; break;
-      case L_DATA1_ADDR_LO:  *param = ((unsigned _int64)data_addr1)&0xFFFFFFFF; break;
-      case L_DATA1_ADDR_HI:  *param = (((unsigned _int64)data_addr1)>>32)&0xFFFFFFFF; break;
-
-      default: return csGetParameter(name, param, status);
-   }
-   return status;
+	return L_SUCCESS;
 }
 
-FDF(ULONG) LDaqBoard::SetParameter(ULONG name, PULONG param)
+FDF(ULONG) LDaqBoardSimulator::SetParameter(ULONG name, PULONG param)
 {
-   ULONG status = L_SUCCESS;
-   if((name>=10100) && (name<10228))
-   {
-      user_prop[name-10100] = *param;
-      return status;
-   }
-
-   return csSetParameter(name, param, status);
+	return L_SUCCESS;
 }
-
-
-
 
 // work with event
 // DIOC_SETEVENT - adc stop event; DIOC_SETEVENT_DAC - dac stop event
-FDF(ULONG) LDaqBoard::SetLDeviceEvent(HANDLE hEvnt,ULONG EventId)
+FDF(ULONG) LDaqBoardSimulator::SetLDeviceEvent(HANDLE hEvnt,ULONG EventId)
 {
-
-      PVOID InBuf[1];
-      ULONG OutBuf,cbRet;
-      InBuf[0]=hEvnt;
-      ULONG DiocCode;
-
-      if(sal->LIsWin32()) // windows c++ style
-      {
-         switch(EventId)
-         {
-            //case L_EVENT_ADC_BUF:
-            case L_STREAM_ADC : DiocCode = DIOC_SETEVENT; break;
-            //case L_EVENT_DAC_BUF:
-            case L_STREAM_DAC : DiocCode = DIOC_SETEVENT_DAC; break;
-
-            default: return L_ERROR;
-         }
-
-         return sal->LDeviceIoControl(hVxd,sal->CTL(DiocCode),
-                                   &InBuf,sizeof(PVOID),
-                                   &OutBuf,sizeof(OutBuf),
-                                   &cbRet,L_STREAM_NULL
-                                  );
-      } else return L_NOTSUPPORTED;
+	return L_NOTSUPPORTED;
 }
 
-void LDaqBoard::CopyDAQtoWDAQ(PDAQ_PAR dp, LPVOID ss, int sp_type)
+void LDaqBoardSimulator::CopyDAQtoWDAQ(PDAQ_PAR dp, LPVOID ss, int sp_type)
 {
 //DAC_PAR_0 d0_sp;  //0
 //DAC_PAR_1 d1_sp;  //1
