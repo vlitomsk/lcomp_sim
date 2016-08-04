@@ -13,17 +13,55 @@ FDF(ULONG) LDaqBoardSimulator::InitStartLDeviceEx(ULONG StreamId)
 	return L_SUCCESS;
 }
 
+ULONG calcAdcCode(double tm, LDaqBoardSimulator * p_brd) {
+    /* base on p_brd->dac_values */
+}
+
 DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
 	LDaqBoardSimulator *p_brd = (LDaqBoardSimulator*)param;
 	int steps_passed = 0;
-	const double irqstep_tm = 
-	while (p_brd->running) {
-		const double passed_time = steps_passed * irqstep_tm;
-		for (int tick = 0; tick < p_brd->adc_par.t1.IrqStep; ++tick) {
-			const double tm = passed_time + tick * p_brd->adc_par.t1.dKadr;
-		}
-		++steps_passed;
-	}
+	const ADC_PAR_0 *adc_par = &p_brd->adc_par.t1;
+	ULONG ramFifos = 0;
+	const double tmPerPage = adc_par->IrqStep * adc_par->dKadr; // ms
+	const double tmPerRamBuf = adc_par->Pages * tmPerPage; // ms
+	const double tmRate = 1.0 / adc_par->Rate; // ms
+	const int deltaSync = adc_par->IrqStep * adc_par->NCh;
+    do {
+        ULONG * pramFifo = p_brd->ramFifo; // TODO какой тип?
+        for (ULONG page = 0; p_brd->running && page < adc_par->Pages; ++page) {
+            /** see
+             * CreateWaitableTimer
+             * https://msdn.microsoft.com/ru-ru/library/windows/desktop/ms682492(v=vs.85).aspx
+             *
+             * SetWaitableTimer
+             * https://msdn.microsoft.com/ru-ru/library/windows/desktop/ms686289(v=vs.85).aspx
+             *
+             * WaitForSingleObject
+             *
+             * and then CloseHandle for that timer
+             */
+
+            SetTimer(); 
+
+            for (ULONG kadr = 0; kadr < adc_par->IrqStep; ++kadr) {
+                for (ULONG chnum = 0; chnum < adc_par->NCh; ++chnum) {
+                    const double tm = tmPerRamBuf * ramFifos 
+                                    + tmPerPage * page 
+                                    + adc_par->dKadr * kadr 
+                                    + tmRate * chnum; // ms from start
+
+                    *pramFifo++ = calcAdcCode(tm, p_brd);
+                }
+            }
+            
+        
+            WaitForTimer; /* not realtime */
+            p_brd->sync += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
+        }
+        ++ramFifos;
+    } while (p_brd->running && adc_par->AutoInit);
+
+    return 0;
 }
 
 FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
