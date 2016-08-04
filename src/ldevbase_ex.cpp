@@ -26,22 +26,21 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
 	const double tmPerRamBuf = adc_par->Pages * tmPerPage; // ms
 	const double tmRate = 1.0 / adc_par->Rate; // ms
 	const int deltaSync = adc_par->IrqStep * adc_par->NCh;
+    const int64_t millisecond = 10000;
+    LARGE_INTEGER liDueTime;
+    liDueTime.quadPart = -(LONGLONG)(adc_par->dKadr * millisecond); // '-' means relatime time
+	HANDLE hKadrTimer;
+	if (!(hKadrTimer = CreateWaitableTimer(NULL, TRUE, NULL))) {
+	    return GetLastError();
+    }
+
     do {
         ULONG * pramFifo = p_brd->ramFifo; // TODO какой тип?
         for (ULONG page = 0; p_brd->running && page < adc_par->Pages; ++page) {
-            /** see
-             * CreateWaitableTimer
-             * https://msdn.microsoft.com/ru-ru/library/windows/desktop/ms682492(v=vs.85).aspx
-             *
-             * SetWaitableTimer
-             * https://msdn.microsoft.com/ru-ru/library/windows/desktop/ms686289(v=vs.85).aspx
-             *
-             * WaitForSingleObject
-             *
-             * and then CloseHandle for that timer
-             */
-
-            SetTimer(); 
+            if (!SetWaitableTimer(hKadrTimer, &liDueTime, 0, NULL, NULL, TRUE)) {
+                CloseHandle(hKadrTimer);
+                return GetLastError();
+            }
 
             for (ULONG kadr = 0; kadr < adc_par->IrqStep; ++kadr) {
                 for (ULONG chnum = 0; chnum < adc_par->NCh; ++chnum) {
@@ -54,8 +53,10 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                 }
             }
             
-        
-            WaitForTimer; /* not realtime */
+            if (WaitForSingleObject(hKadrTimer, INFINITE) != WAIT_OBJECT_0) {
+                CloseHandle(hKadrTimer);
+                return GetLastError();
+            }
             p_brd->sync += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
         }
         ++ramFifos;
