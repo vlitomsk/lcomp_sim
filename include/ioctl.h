@@ -2,7 +2,7 @@
 #define __VXDAPI_IOCTL 1
 // Board Type macro definitions
 
-
+#include <Windows.h>
 //#define LABVIEW_FW
 
 #define NONE  0 // no board in slot

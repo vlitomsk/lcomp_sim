@@ -233,26 +233,26 @@ SAL::~SAL() { delete d; }
 
 void SAL::LSetLastError(uint32_t Err) { d->sySetLastError(Err); }
 uint32_t SAL::LGetLastError(void) { return d->syGetLastError(); }
-
-void * SAL::LCreateFile(int slot) { return d->syCreateFile(slot); }
-int    SAL::LCloseHandle(HANDLE hDevice) { return d->syCloseHandle(hDevice); }
-uint32_t  SAL::LDeviceIoControl(void * hDevice,
-                                uint32_t dwIoControlCode,
-                                void * lpInBuffer,
-                                uint32_t nInBufferSize,
-                                void * lpOutBuffer,
-                                uint32_t nOutBufferSize,
-                                uint32_t * lpBytesReturned,
-                                uint32_t StreamId)
-{
-	return d->syDeviceIoControl(hDevice, dwIoControlCode,lpInBuffer,nInBufferSize,
-                               lpOutBuffer,nOutBufferSize,(PULONG)lpBytesReturned,StreamId);
-}
-
-uint32_t SAL::LWaitOverlapped(void * hDevice, uint32_t StreamId) // ждет завершения overlapped операции
-{
-   return d->syWaitOverlapped(hDevice, StreamId); // ждет завершения overlapped операции
-}
+//
+//void * SAL::LCreateFile(int slot) { return d->syCreateFile(slot); }
+//int    SAL::LCloseHandle(HANDLE hDevice) { return d->syCloseHandle(hDevice); }
+//uint32_t  SAL::LDeviceIoControl(void * hDevice,
+//                                uint32_t dwIoControlCode,
+//                                void * lpInBuffer,
+//                                uint32_t nInBufferSize,
+//                                void * lpOutBuffer,
+//                                uint32_t nOutBufferSize,
+//                                uint32_t * lpBytesReturned,
+//                                uint32_t StreamId)
+//{
+//	return d->syDeviceIoControl(hDevice, dwIoControlCode,lpInBuffer,nInBufferSize,
+//                               lpOutBuffer,nOutBufferSize,(PULONG)lpBytesReturned,StreamId);
+//}
+//
+//uint32_t SAL::LWaitOverlapped(void * hDevice, uint32_t StreamId) // ждет завершения overlapped операции
+//{
+//   return d->syWaitOverlapped(hDevice, StreamId); // ждет завершения overlapped операции
+//}
 
 void SAL::atomic_inc(atomic_t *v) { d->sy_atomic_inc(v); };
 void SAL::atomic_dec(atomic_t *v) { d->sy_atomic_dec(v); };
@@ -263,5 +263,5 @@ void * SAL::LMapMemory(void * hDevice, void * lpAddr, int32_t Size, int32_t off)
 void * SAL::LVirtualAlloc(size_t size) { return d->syVirtualAlloc(size); }
 int SAL::LVirtualFree(void * addr) { return d->syVirtualFree(addr); }
 int SAL::LIsWin32() { return d->syIsWin32(); }
-uint32_t SAL::CTL(uint32_t cmd) { return d->syDIOC(cmd); }
+//uint32_t SAL::CTL(uint32_t cmd) { return d->syDIOC(cmd); }
 

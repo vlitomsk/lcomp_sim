@@ -131,7 +131,7 @@ public:
 
 private:
 	bool running;
-	static DWORD __stdcall sim_thread_routine(LPVOID param);
+	static DWORD __stdcall sim_thread_routine(void * param);
 
 	atomic_t    m_cRef;
    ULONG       m_Slot;

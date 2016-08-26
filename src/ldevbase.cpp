@@ -202,8 +202,7 @@ LPVOID LDaqBoardSimulator::GetDAQ_PtrSz(ULONG StreamId, ULONG *sz)
 FDF(ULONG) LDaqBoardSimulator::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize, void** Data, void** Sync, ULONG StreamId)
 {
    ULONG status = L_ERROR;
-   USHORT *d1;
-   USHORT tPages, tFIFO, tIrqStep;
+   ULONG tPages, tFIFO, tIrqStep;
 
 //   tPages   = (USHORT)OutBuf[0];
 //   tFIFO    = (USHORT)OutBuf[1];
@@ -219,15 +218,8 @@ FDF(ULONG) LDaqBoardSimulator::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize,
 
    *UsedSize = tPages*tIrqStep;
 
-   void *ptr;
-   switch(StreamId)
-   {
-      case L_STREAM_ADC: { ptr = map_inBuffer; } break;
-      //case L_STREAM_DAC: { ptr = map_outBuffer;} break;
-      default: return L_ERROR;
-   }
-
-   *Sync = (PULONG)ptr; d1 = (PUSHORT)ptr; *Data = &d1[2048];
+   *Sync = new ULONG;
+   *Data = new ULONG[*UsedSize];//&d1[2048];
 
    if(sp!=NULL) // update properties to new real values;
    {
@@ -239,7 +231,6 @@ FDF(ULONG) LDaqBoardSimulator::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize,
    switch(StreamId) // for GetParameter
    {
       case L_STREAM_ADC: { sync_addr =(PULONG)*Sync;  data_addr =  (PULONG)*Data;} break;
-    //  case L_STREAM_DAC: { sync_addr1 =(PULONG)*Sync; data_addr1 = (PULONG)*Data;} break;
    }
 
    return status;

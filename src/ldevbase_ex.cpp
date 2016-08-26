@@ -15,6 +15,8 @@ FDF(ULONG) LDaqBoardSimulator::InitStartLDeviceEx(ULONG StreamId)
 
 ULONG calcAdcCode(double tm, LDaqBoardSimulator * p_brd) {
     /* base on p_brd->dac_values */
+
+	return 0;
 }
 
 DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
@@ -28,14 +30,14 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
 	const int deltaSync = adc_par->IrqStep * adc_par->NCh;
     const int64_t millisecond = 10000;
     LARGE_INTEGER liDueTime;
-    liDueTime.quadPart = -(LONGLONG)(adc_par->dKadr * millisecond); // '-' means relatime time
+    liDueTime.QuadPart = -(LONGLONG)(adc_par->dKadr * millisecond); // '-' means relatime time
 	HANDLE hKadrTimer;
 	if (!(hKadrTimer = CreateWaitableTimer(NULL, TRUE, NULL))) {
 	    return GetLastError();
     }
 
     do {
-        ULONG * pramFifo = p_brd->ramFifo; // TODO какой тип?
+		ULONG * pramFifo = p_brd->data_addr;
         for (ULONG page = 0; p_brd->running && page < adc_par->Pages; ++page) {
             if (!SetWaitableTimer(hKadrTimer, &liDueTime, 0, NULL, NULL, TRUE)) {
                 CloseHandle(hKadrTimer);
@@ -52,12 +54,12 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                     *pramFifo++ = calcAdcCode(tm, p_brd);
                 }
             }
-            
+           
             if (WaitForSingleObject(hKadrTimer, INFINITE) != WAIT_OBJECT_0) {
                 CloseHandle(hKadrTimer);
                 return GetLastError();
             }
-            p_brd->sync += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
+            *(p_brd->sync_addr) += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
         }
         ++ramFifos;
     } while (p_brd->running && adc_par->AutoInit);
@@ -69,7 +71,7 @@ FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
 {
 	if (running)
 		return L_SUCCESS;
-	HANDLE sim_thread = CreateThread(NULL, 0, LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
+	HANDLE sim_thread = CreateThread(NULL, 0, &LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
 	if (sim_thread == NULL)
 		return L_ERROR;
 	running = true;

@@ -13,8 +13,9 @@
 
 
 #ifndef DEFINE_GUID
-   #include "../include/guiddef.h"
-
+#include <guiddef.h>
+//   #include "../include/guiddef.h"
+/*
    typedef void * LPVOID;
    typedef void * PVOID;
    typedef void * HANDLE;
@@ -27,12 +28,7 @@
    typedef short SHORT, * PSHORT;
    typedef unsigned short USHORT, * PUSHORT;
    typedef LONG HRESULT;
-
-
-   #ifndef INVALID_HANDLE_VALUE
-      #define INVALID_HANDLE_VALUE ((void *)(-1))
-   #endif
-
+   */
 
    #endif   
 
