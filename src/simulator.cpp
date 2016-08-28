@@ -83,9 +83,14 @@ ULONG DaqL780Simulator::FillADCparameters(PDAQ_PAR sp)
 	if (ap->t1.Pages == 0) return L_ERROR;
 	if (ap->t1.IrqStep == 0) return L_ERROR;
 
+	QF = pdu.t1.Quartz / 1000.0;
+	DSP_CLOCK_OUT_PLX = 2.0*QF;
+	if (DSP_CLOCK_OUT_PLX == 0) return L_ERROR;
+
 	if (ap->t1.dRate < 0.1) ap->t1.dRate = 0.1;
 	if (ap->t1.dRate > max_rate) ap->t1.dRate = max_rate;
 
+	SCLOCK_DIV = DSP_CLOCK_OUT_PLX / (2.0*(ap->t1.dRate)) - 0.5;
 	adc_par.t1.Rate = (USHORT)SCLOCK_DIV;
 	ap->t1.dRate = DSP_CLOCK_OUT_PLX / (2.0*(adc_par.t1.Rate + 1));
 	adc_par.t1.FPDelay = (USHORT)(DSP_CLOCK_OUT_PLX / (ap->t1.dRate) + 5.5);
