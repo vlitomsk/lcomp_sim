@@ -20,9 +20,8 @@ public:
 
    IFC(ULONG) EnableCorrection(USHORT Ena);
       
-   //IFC(ULONG)  LoadBios(char *FileName);
-
-
+   inline IFC(ULONG)  LoadBios(char *FileName) { return L_SUCCESS; }
+   
    IFC(ULONG)  ReadFlashWord(USHORT Addr, PUSHORT Data);
    IFC(ULONG)  WriteFlashWord(USHORT FlashAddress, USHORT Data);
    IFC(ULONG)  ReadPlataDescr(LPVOID pd);

@@ -13,7 +13,7 @@ FDF(ULONG) LDaqBoardSimulator::InitStartLDeviceEx(ULONG StreamId)
 	return L_SUCCESS;
 }
 
-ULONG calcAdcCode(double tm, LDaqBoardSimulator * p_brd) {
+ULONG calcAdcCode(double tm, LDaqBoardSimulator * p_brd, int chnum) {
     /* base on p_brd->dac_values */
 
 	return 0;
@@ -51,7 +51,7 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                                     + adc_par->dKadr * kadr 
                                     + tmRate * chnum; // ms from start
 
-                    *pramFifo++ = calcAdcCode(tm, p_brd);
+                    *(pramFifo++) = calcAdcCode(tm, p_brd, chnum);
                 }
             }
            
@@ -59,7 +59,8 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                 CloseHandle(hKadrTimer);
                 return GetLastError();
             }
-            *(p_brd->sync_addr) += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
+            //*(p_brd->sync_addr) += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
+			p_brd->sync_addr = pramFifo;
         }
         ++ramFifos;
     } while (p_brd->running && adc_par->AutoInit);
@@ -71,10 +72,10 @@ FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
 {
 	if (running)
 		return L_SUCCESS;
+	running = true;
 	HANDLE sim_thread = CreateThread(NULL, 0, &LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
 	if (sim_thread == NULL)
 		return L_ERROR;
-	running = true;
 
     // start thread here
 	ULONG status = L_SUCCESS;
