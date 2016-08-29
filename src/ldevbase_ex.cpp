@@ -28,6 +28,7 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
 	const double tmPerRamBuf = adc_par->Pages * tmPerPage; // ms
 	const double tmRate = 1.0 / adc_par->Rate; // ms
 	const int deltaSync = adc_par->IrqStep * adc_par->NCh;
+	const int ramFifoSize = adc_par->NCh * adc_par->IrqStep * adc_par->Pages;
     const int64_t millisecond = 10000;
     LARGE_INTEGER liDueTime;
     liDueTime.QuadPart = -(LONGLONG)(adc_par->dKadr * millisecond); // '-' means relatime time
@@ -60,7 +61,7 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                 return GetLastError();
             }
             //*(p_brd->sync_addr) += deltaSync; // TODO инкремент указателя на 1 -- это сколько отсчетов?
-			p_brd->sync_addr = pramFifo;
+			*(p_brd->sync_addr) = (*(p_brd->sync_addr) + deltaSync) % ramFifoSize;
         }
         ++ramFifos;
     } while (p_brd->running && adc_par->AutoInit);

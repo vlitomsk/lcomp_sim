@@ -115,6 +115,9 @@ ULONG DaqL780Simulator::FillADCparameters(PDAQ_PAR sp)
 	adc_par.t1.SynchroMode = ap->t1.SynchroMode;
 	adc_par.t1.AdChannel = ap->t1.AdChannel;
 	adc_par.t1.AdPorog = ap->t1.AdPorog;
+	adc_par.t1.dKadr = ap->t1.dKadr;
+	adc_par.t1.dRate = ap->t1.dRate;
+	adc_par.t1.dScale = ap->t1.dScale;
 
 	adc_par.t1.FIFO = ap->t1.FIFO;
 	adc_par.t1.IrqStep = ap->t1.IrqStep;

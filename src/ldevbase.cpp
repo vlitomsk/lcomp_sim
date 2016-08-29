@@ -232,6 +232,7 @@ FDF(ULONG) LDaqBoardSimulator::SetParametersStream(PDAQ_PAR sp, PULONG UsedSize,
    {
       case L_STREAM_ADC: { sync_addr =(PULONG)*Sync;  data_addr =  (PULONG)*Data;} break;
    }
+   *sync_addr = 0;
 
    return status;
 }
