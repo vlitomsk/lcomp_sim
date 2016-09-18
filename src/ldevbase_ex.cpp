@@ -13,10 +13,35 @@ FDF(ULONG) LDaqBoardSimulator::InitStartLDeviceEx(ULONG StreamId)
 	return L_SUCCESS;
 }
 
-ULONG calcAdcCode(double tm, LDaqBoardSimulator * p_brd, int chnum) {
-    /* base on p_brd->dac_values */
+double getDacVolt(USHORT code) {
+	int val = code;
+	
+	if (val > 2048)
+		val = val - 4096;
+	return val * 5.0 / 2048.0;
+}
+#include <cmath>
+USHORT getAdcCode(double volt) {
+	USHORT rounded = round(abs(volt) * 8192.0 / 5.0);
+	if (volt < 0) {
+		return rounded;//8192 - rounded;
+	} else {
+		return rounded;
+	}
+}
 
-	return 0;
+#include "../include/simulator.h"
+USHORT calcAdcCode(double tm, LDaqBoardSimulator * p_brd, int logicChnum) {
+	DaqL780Simulator * sim = (DaqL780Simulator*)p_brd;
+
+	switch (logicChnum) {
+	case 0:
+		return getAdcCode(getDacVolt(sim->dac_values[0]) * 0.1);
+	case 1:
+		return getAdcCode(getDacVolt(sim->dac_values[0]));
+	case 4:
+		return getAdcCode(getDacVolt(sim->dac_values[1]));
+	};
 }
 
 DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
@@ -38,7 +63,7 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
     }
 
     do {
-		ULONG * pramFifo = p_brd->data_addr;
+		USHORT * pramFifo = (USHORT*)p_brd->data_addr;
         for (ULONG page = 0; p_brd->running && page < adc_par->Pages; ++page) {
             if (!SetWaitableTimer(hKadrTimer, &liDueTime, 0, NULL, NULL, TRUE)) {
                 CloseHandle(hKadrTimer);
@@ -52,7 +77,7 @@ DWORD __stdcall LDaqBoardSimulator::sim_thread_routine(LPVOID param) {
                                     + adc_par->dKadr * kadr 
                                     + tmRate * chnum; // ms from start
 
-                    *(pramFifo++) = calcAdcCode(tm, p_brd, chnum);
+                    *(pramFifo++) = calcAdcCode(tm, p_brd, adc_par->Chn[chnum]);
                 }
             }
            
@@ -74,7 +99,7 @@ FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
 	if (running)
 		return L_SUCCESS;
 	running = true;
-	HANDLE sim_thread = CreateThread(NULL, 0, &LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
+	sim_thread = CreateThread(NULL, 0, &LDaqBoardSimulator::sim_thread_routine, this, 0, NULL);
 	if (sim_thread == NULL)
 		return L_ERROR;
 
@@ -85,7 +110,11 @@ FDF(ULONG) LDaqBoardSimulator::StartLDeviceEx(ULONG StreamId)
 
 FDF(ULONG) LDaqBoardSimulator::StopLDeviceEx(ULONG StreamId)
 {
-    // stop thread here
+	running = false;
+	if (WaitForSingleObject(sim_thread, INFINITE) != WAIT_OBJECT_0)
+		return L_ERROR;
+	sim_thread = NULL;
+
 	ULONG status = L_SUCCESS;
 	return status;
 };

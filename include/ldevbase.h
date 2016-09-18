@@ -1,5 +1,6 @@
 class LDaqBoardSimulator: public IDaqLDevice, public IDaqLDevice2
 {
+	HANDLE sim_thread;
 public:
 	
       virtual HRESULT __stdcall QueryInterface(const IID& iid, void** ppv);

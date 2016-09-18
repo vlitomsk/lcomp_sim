@@ -251,7 +251,6 @@ FDF(ULONG) LDaqBoardSimulator::FillDAQparameters(PDAQ_PAR sp)
    }
 }
 
-
 FDF(ULONG) LDaqBoardSimulator::IoAsync(PDAQ_PAR sp)
 {
    if(sp == NULL) return L_ERROR;

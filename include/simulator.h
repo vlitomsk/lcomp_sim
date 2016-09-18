@@ -28,9 +28,8 @@ public:
    IFC(ULONG)  WritePlataDescr(LPVOID pd, USHORT Ena);
    IFC(ULONG)  EnableFlashWrite(USHORT Flag);
 
-   USHORT dac_values[2];
-
 public:
+	volatile USHORT dac_values[2];
    DaqL780Simulator(ULONG Slot) :LDaqBoardSimulator(Slot) {
 	   dac_values[0] = dac_values[1] = 0;
    }
